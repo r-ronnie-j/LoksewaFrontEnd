@@ -16,12 +16,15 @@ let liveTestSchema = new mongoose.Schema({
         type:[String],
         required:true
     },
-    time:{
+    startTime:{
         type:Date,
         required:true
     },
     duration:{
         type:Number,
+    },
+    endTime:{
+        type:Date,
         required:true
     },
     questions:{
@@ -39,16 +42,6 @@ let liveTestSchema = new mongoose.Schema({
                 required:true,
                 min:1,
                 max:4
-            },
-            status:{
-                type:Number,
-                default:-1,
-                min:-1,
-                max:1
-            },
-            attempt:{
-                type:Number,
-                required:true
             },
             explanation:{
                 type:String,

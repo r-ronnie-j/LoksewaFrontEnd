@@ -48,6 +48,12 @@ app.use('/signup',signupRoute)
 let logoutRoute = require('./routes/logoutRoute');
 app.use('/logout',logoutRoute);
 
+let editorRoute = require('./routes/editorRoute');
+app.use('/editor',editorRoute)
+
+let adminRoute = require('./routes/adminRoute');
+app.use('/admin',adminRoute)
+
 app.listen(process.env.PORT || 8080,()=>{
     console.log("We have started the connection in port",process.env.PORT || 8080);
 })

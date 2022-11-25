@@ -28,6 +28,11 @@ let testResultSchema = new mongoose.Schema({
                 },
                 attemptedAnswer:{
                     type:Number
+                },
+                //Here we have -1: not attempted /0:marked for review and 1 for attempted
+                status:{
+                    type:Number,
+                    default:-1
                 }
             }
         ]
