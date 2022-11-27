@@ -1,4 +1,5 @@
 let express = require("express");
+const { validationResult } = require("express-validator");
 let liveTestModel = require("../model/liveTestModel");
 const { findById } = require("../model/studentModel");
 const testResultModel = require("../model/testResultModel");
@@ -123,6 +124,56 @@ router.post(
     }
   }
 );
- 
+
+router.post(
+  "/active/update",
+  body("id", "Id is a required field").isString().exists(),
+  body("questionNumber", "questionNumber is a required field is numeric")
+    .exists()
+    .isNumeric(),
+  body("answer", "Answer field is required and must be a number")
+    .exists()
+    .isInt({ min: 0, max: 4 }),
+  body("status", "Status is a required field and must be a number")
+    .exists()
+    .isInt({ min: -1, max: 1 }),
+  async (req, res) => {
+    let err = validationResult(req);
+    if (!err.isEmpty()) {
+      res.status(400).json({
+        status: false,
+        message: err.array(),
+      });
+    } else {
+      let { id, questionNumber, answer, status } = req.body;
+      try {
+        let test = await testResultModel.findOneAndUpdate(
+          { id },
+          {
+            $set: {
+              "result.$[elem].correctAnswer": answer,
+              "result.$[elem].status": status,
+            },
+          },
+          { arrayFilters: [{ elem: questionNumber }], new: true }
+        );
+        res.status(200).json({
+          "status":true,
+          "message":"We have successfully update the result"
+        })
+      } catch (error) {
+        console.log(
+          "Some error occured while updating the result in the route"
+        );
+        console.log(error);
+        res.status(500).json({
+          status: false,
+          messsage:
+            "Some server error occured while updating the result in the server",
+        });
+      }
+    }
+  }
+);
 
 module.exports = router;

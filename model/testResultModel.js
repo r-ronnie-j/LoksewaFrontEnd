@@ -15,17 +15,19 @@ let testResultSchema = new mongoose.Schema({
         required:true
     },
     student:{
+        //id of student who has given the test
         type:mongoose.Schema.Types.ObjectId,
         require:true
     },
     //result is the answer that a 
     result:{
         type:[
-            {
+            {   //must be feed as soon as 
                 correctAnswer:{
                     type:Number,
                     required:true
                 },
+                //here we have 4 option and 0 for unattempted
                 attemptedAnswer:{
                     type:Number
                 },
@@ -35,7 +37,8 @@ let testResultSchema = new mongoose.Schema({
                     default:-1
                 }
             }
-        ]
+        ],
+        required:true
     }
 })
 

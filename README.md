@@ -1,4 +1,5 @@
 # to do
-I need to implement the live exam route to create a live exam
-We need to discuss how live exams will be created 
-We also need to implement the front end now
+- set the payment portal for now just leave it
+- to explain all the routes from the server side and try to explain the operation
+- to see if the protected routes are actually protected or not
+- to integrate with the frontend

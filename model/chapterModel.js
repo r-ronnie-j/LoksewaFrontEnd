@@ -3,11 +3,11 @@ let mongoose = require('mongoose');
 //This model is used to store the data about the chapter
 let chapterSchema = new mongoose.Schema({
     "title":{
-        type:String,
+        type:String,//C
         required: true
     },
     "field":{
-        type:[String],
+        type:[String],//Technical,Engi,Comp
         required:true
     }
 });

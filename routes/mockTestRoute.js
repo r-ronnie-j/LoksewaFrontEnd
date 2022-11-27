@@ -4,6 +4,8 @@ let { body, query, validationResult } = require("express-validator");
 let questionModel = require("../model/questionModel");
 let mockTestModel = require("../model/mockTestModel");
 
+//We are creating a mock test from here
+//It is going to need array of question details top
 router.post(
   "/",
   body("title", "Title field must be present and should be string")
@@ -15,6 +17,26 @@ router.post(
   body("duration", "Duration must be present and should be numeric")
     .exists()
     .isNumeric(),
+  body(
+    "questionDescription.*.chapter",
+    "chapter is a required field in questiondescription and must be string"
+  ).exists(),
+  body(
+    "questionDescription.*.number",
+    "number is a required field in questiondescription and must be number"
+  )
+    .exists()
+    .isNumeric(),
+  body(
+    "questionDescription.*.field",
+    "field must be present in a questionDescription"
+  )
+    .exists()
+    .isArray(),
+  body(
+    "questionDescription.*field.*",
+    "Field must be contain string elements as a child"
+  ).isString(),
   async (req, res) => {
     console.log(req.body);
     let err = validationResult(req);
@@ -25,10 +47,10 @@ router.post(
       });
     }
     try {
-      let { title, post, duration } = req.body;
+      let { title, post, duration, questionDescription } = req.body;
       let mockTest = new mockTestModel({ title, post, duration });
       mockTest.questions = [];
-      for (element of req.body) {
+      for (element of questionDescription) {
         let { chapter, number, field } = element;
         let questionResult = await questionModel
           .find({
@@ -67,25 +89,26 @@ router.post(
   }
 );
 
-router.get(
+//This is used to get the mock test 
+router.post(
   "/",
-  query("id", "Id is a required string field").isString(),
+  body("id", "Id is a required string field").isString(),
   async (req, res) => {
-    let err =  validationResult(req);
-    if(!err.isEmpty()){
-        res.status(400).json({
-            "status":false,
-            "message":err.array()
-        })
+    let err = validationResult(req);
+    if (!err.isEmpty()) {
+      res.status(400).json({
+        status: false,
+        message: err.array(),
+      });
     }
-    try{
-        let mockTest = await mockTestModel.findById(id)
-        res.status(200).json(mockTest);
-    }catch(error){
-        res.status(500).json({
-            "status":false,
-            "message":"The given mock test does not exists"
-        })
+    try {
+      let mockTest = await mockTestModel.findById(id);
+      res.status(200).json(mockTest);
+    } catch (error) {
+      res.status(500).json({
+        status: false,
+        message: "The given mock test does not exists",
+      });
     }
   }
 );

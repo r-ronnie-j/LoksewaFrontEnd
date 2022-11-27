@@ -6,6 +6,9 @@ let MongoStore =  require('connect-mongo');
 
 const app = express();
 
+
+//This portion is to connect to the database
+//For now we are just using local server in our local machine
 mongoose.connect("mongodb://localhost:27017/Loksewa",(er)=>{
     console.log("connection to the database has been made");
 })
@@ -15,7 +18,8 @@ app.use(express.urlencoded({
     extended:false
 }));
 
-
+//We are setting the express-session from here 
+//This portion of the code is required to set up the session
 app.use(session({
     cookie:{
         maxAge:86_400*1000,
@@ -32,7 +36,7 @@ app.use(session({
     })
 }))
 
-
+//All the routes of the app goes here
 let chapterRouter = require('./routes/chapterRoute')
 app.use('/chapter',chapterRouter)
 

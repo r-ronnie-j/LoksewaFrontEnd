@@ -21,12 +21,14 @@ let studentSchema = new mongoose.Schema({
         required:true
     },
     activeTest:{
+        //id of the active test
         type:mongoose.Schema.Types.ObjectId
     },
     waitingTest:{
         type:[mongoose.Schema.Types.ObjectId]
     },
     givenTest:{
+        //result of the test to be automatcally created when a student buys a test
         //this contains the result of all the result in the test
         type:[mongoose.Schema.Types.ObjectId]
     }

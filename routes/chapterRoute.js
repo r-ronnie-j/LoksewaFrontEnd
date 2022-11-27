@@ -1,5 +1,7 @@
 const express = require("express");
+const { validationResult } = require("express-validator");
 let chapterModel = require("../model/chapterModel");
+const questionModel = require("../model/questionModel");
 
 let router = express.Router();
 
@@ -95,4 +97,35 @@ function getTheChapters(obj) {
   }
   return res;
 }
+
+router.post('/questions',
+body('chapter',"Chapter is a required field and must be string").exists().isString(),
+body('field',"Field is a required field").exists(),
+body('field.$',"All the content of the field must be string").isString(),
+body('index',"Index is a required field and must be integer").isInt(),
+async (req,res)=>{
+  let err = validationResult(req);
+  if(!err.isEmpty()){
+    res.status(400).json({
+      "status":false,
+      "message":err.array()
+    })
+  }else{
+    let {chapter,field,index}= req.body
+    try{
+      let questions = await questionModel.find({"chapter":chapter,"field":{$all : field}},["question","answer","correct","marks","explanation"]).limit(10).skip(index)
+      res.status(200).json({
+        "status":true,
+        "questions":questions
+      })
+    }catch(error){
+      console.log("Some error occured in chapter question routes");
+      console.log(error)
+      res.status(500).json({
+        "status":false,
+        "message":"Some error has occured while parsing the data"
+      })
+    }
+  }
+})
 module.exports = router;
