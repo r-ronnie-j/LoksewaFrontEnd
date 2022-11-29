@@ -3,15 +3,17 @@ let session = require('express-session');
 require("dotenv").config();
 let mongoose= require('mongoose');
 let MongoStore =  require('connect-mongo');
+let cors = require('cors');
 
 const app = express();
-
 
 //This portion is to connect to the database
 //For now we are just using local server in our local machine
 mongoose.connect("mongodb://localhost:27017/Loksewa",(er)=>{
     console.log("connection to the database has been made");
 })
+
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -22,12 +24,12 @@ app.use(express.urlencoded({
 //This portion of the code is required to set up the session
 app.use(session({
     cookie:{
+        httpOnly:true,
         maxAge:86_400*1000,
-        secure:true
+        secure:false
     },
     resave:false,
-    rolling:true,
-    saveUninitialized:false,
+    saveUninitialized:true,
     secret:process.env.SESSION_SECRET || "random secret is here",
     store:MongoStore.create({
         mongoUrl:'mongodb://localhost:27017/Loksewa_session',
@@ -57,6 +59,9 @@ app.use('/editor',editorRoute)
 
 let adminRoute = require('./routes/adminRoute');
 app.use('/admin',adminRoute)
+
+let timeRoute = require('./routes/timeRoute');
+app.use('/time',timeRoute);
 
 app.listen(process.env.PORT || 8080,()=>{
     console.log("We have started the connection in port",process.env.PORT || 8080);

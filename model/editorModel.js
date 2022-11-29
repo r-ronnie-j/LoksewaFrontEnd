@@ -19,4 +19,4 @@ let editorSchema = new mongoose.Schema({
     }
 })
 
-module.exports = mongoose.Model('editorModel',editorSchema);
+module.exports = mongoose.model('editorModel',editorSchema);

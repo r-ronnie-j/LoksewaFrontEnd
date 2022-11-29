@@ -30,7 +30,6 @@ let questionScheme = new mongoose.Schema({
     },
     "explanation":{
         type:String,
-        required:true
     }
 })
 
